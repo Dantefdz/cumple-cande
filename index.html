@@ -63,8 +63,8 @@
   .btn:focus-visible, .nav:focus-visible, .cerrar:focus-visible { outline: 3px solid var(--lila-fuerte); outline-offset: 3px; }
 
   dialog {
-    border: 0; padding: 0; width: min(94vw, 560px);
-    max-height: 96vh;
+    border: 0; padding: 0; width: min(96vw, 850px);
+    max-height: 96vh; max-height: 96dvh;
     border-radius: 24px;
     background: var(--crema);
     color: var(--tinta);
@@ -75,8 +75,8 @@
   .cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; }
   .cabecera h2 { font-family: "Fraunces", Georgia, serif; font-style: italic; font-size: 1.35rem; margin: 0; }
   .cerrar { background: var(--lila-fondo); border: 0; border-radius: 999px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; color: var(--tinta); flex: none; }
-  .pantalla { height: min(64vh, 600px); background: #1d1430; border-radius: 16px; overflow: hidden; display: grid; place-items: center; }
-  .pantalla iframe, .pantalla video { width: 100%; height: 100%; border: 0; background: #000; object-fit: contain; }
+  .pantalla { height: min(75vh, 800px); height: min(75dvh, 800px); background: #1d1430; border-radius: 16px; overflow: hidden; position: relative; }
+  .pantalla iframe, .pantalla video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; border: 0; background: #000; object-fit: contain; object-position: center; }
   .pantalla p { color: var(--lila); padding: 20px; text-align: center; margin: 0; }
   .mensaje-regalo { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: var(--lila-fondo); text-align: center; line-height: 1.45; }
   .mensaje-regalo strong { color: var(--lila-fuerte); }
@@ -86,6 +86,9 @@
   #contador { font-weight: 500; }
 
   #confeti { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+  @media (max-height: 750px), (max-width: 600px) {
+    .pantalla { height: min(75vh, calc(96vh - 190px)); height: min(75dvh, calc(96dvh - 190px)); min-height: 120px; }
+  }
 </style>
 </head>
 <body>
