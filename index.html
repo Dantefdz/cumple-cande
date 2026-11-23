@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Feliz cumple, Cande</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --lila-fondo: #ece3f8;
+    --lila: #c9b3ec;
+    --lila-fuerte: #9b7fd1;
+    --tinta: #3a2a58;
+    --crema: #fcf9ff;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "DM Sans", system-ui, sans-serif;
+    color: var(--tinta);
+    background:
+      radial-gradient(circle at 15% 20%, #f6efff 0, transparent 45%),
+      radial-gradient(circle at 85% 80%, var(--lila) 0, transparent 50%),
+      var(--lila-fondo);
+    background-color: var(--lila-fondo);
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    overflow-x: hidden;
+  }
+  main { text-align: center; max-width: 640px; position: relative; z-index: 1; }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(3rem, 14vw, 7rem);
+    line-height: .95;
+    margin: 0 0 18px;
+    letter-spacing: -.02em;
+  }
+  h1 span { display: block; color: var(--lila-fuerte); }
+  p.sub { font-size: 1.15rem; margin: 0 0 36px; line-height: 1.5; }
+  .btn {
+    font: 700 1.1rem "DM Sans", sans-serif;
+    color: var(--crema);
+    background: var(--tinta);
+    border: 0;
+    border-radius: 999px;
+    padding: 16px 34px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 var(--lila-fuerte);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--lila-fuerte); }
+  .btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--lila-fuerte); }
+  .btn:focus-visible, .nav:focus-visible, .cerrar:focus-visible { outline: 3px solid var(--lila-fuerte); outline-offset: 3px; }
+
+  dialog {
+    border: 0; padding: 0; width: min(94vw, 560px);
+    max-height: 96vh;
+    border-radius: 24px;
+    background: var(--crema);
+    color: var(--tinta);
+    box-shadow: 0 20px 60px rgba(58,42,88,.35);
+  }
+  dialog::backdrop { background: rgba(58,42,88,.55); }
+  .caja { padding: 16px; }
+  .cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; }
+  .cabecera h2 { font-family: "Fraunces", Georgia, serif; font-style: italic; font-size: 1.35rem; margin: 0; }
+  .cerrar { background: var(--lila-fondo); border: 0; border-radius: 999px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; color: var(--tinta); flex: none; }
+  .pantalla { height: min(64vh, 600px); background: #1d1430; border-radius: 16px; overflow: hidden; display: grid; place-items: center; }
+  .pantalla iframe, .pantalla video { width: 100%; height: 100%; border: 0; background: #000; object-fit: contain; }
+  .pantalla p { color: var(--lila); padding: 20px; text-align: center; margin: 0; }
+  .mensaje-regalo { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: var(--lila-fondo); text-align: center; line-height: 1.45; }
+  .mensaje-regalo strong { color: var(--lila-fuerte); }
+  .controles { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 10px; }
+  .nav { font: 700 1rem "DM Sans", sans-serif; background: var(--lila); color: var(--tinta); border: 0; border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+  .nav:disabled { opacity: .4; cursor: default; }
+  #contador { font-weight: 500; }
+
+  #confeti { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+</style>
+</head>
+<body>
+<canvas id="confeti"></canvas>
+
+<main>
+  <h1>Feliz cumple, <span>Cande</span></h1>
+  <p class="sub">Hoy es tu día y te preparé algo especial.<br>Tocá el botón para verlo.</p>
+  <button class="btn" id="abrir">Abrir mi regalo</button>
+</main>
+
+<dialog id="modal" aria-labelledby="titulo-modal">
+  <div class="caja">
+    <div class="cabecera">
+      <h2 id="titulo-modal">Tus videos de cumpleaños</h2>
+      <button class="cerrar" id="cerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <p class="mensaje-regalo">No pude conseguir el saludo de <strong>Abel Pintos</strong>, pero el de ellos sí. 💜</p>
+    <div class="pantalla" id="pantalla"></div>
+    <div class="controles">
+      <button class="nav" id="anterior">Anterior</button>
+      <span id="contador"></span>
+      <button class="nav" id="siguiente">Siguiente</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Videos locales alojados junto a la página, en la carpeta "videos".
+  // El orden de reproducción es el solicitado.
+  const VIDEOS = [
+    "videos/Chayanne.mp4",
+    "videos/nocheros.mp4",
+    "videos/messi.mp4",
+    "videos/topa.mp4",
+    "videos/licha.mp4",
+    "videos/bts.mp4"
+  ];
+
+  const modal = document.getElementById("modal");
+  const pantalla = document.getElementById("pantalla");
+  const contador = document.getElementById("contador");
+  const btnAnterior = document.getElementById("anterior");
+  const btnSiguiente = document.getElementById("siguiente");
+  let actual = 0;
+
+  function mostrar(i) {
+    pantalla.innerHTML = "";
+    if (VIDEOS.length === 0) {
+      pantalla.innerHTML = "<p>Los videos llegan muy pronto.</p>";
+      contador.textContent = "";
+      btnAnterior.disabled = btnSiguiente.disabled = true;
+      return;
+    }
+
+    actual = (i + VIDEOS.length) % VIDEOS.length;
+    const el = document.createElement("video");
+    el.controls = true;
+    el.playsInline = true;
+    el.preload = "metadata";
+    el.setAttribute("controlsList", "nodownload");
+    el.src = VIDEOS[actual];
+    el.setAttribute("aria-label", "Video de cumpleaños " + (actual + 1));
+    el.addEventListener("error", () => {
+      pantalla.innerHTML = "<p>No se pudo cargar este video. Revisá que la carpeta <strong>videos</strong> esté junto al archivo HTML y que el nombre del MP4 coincida.</p>";
+    }, { once: true });
+    pantalla.appendChild(el);
+    contador.textContent = (actual + 1) + " de " + VIDEOS.length;
+    btnAnterior.disabled = btnSiguiente.disabled = VIDEOS.length < 2;
+  }
+
+  function cerrarModal() {
+    pantalla.innerHTML = "";
+    modal.close();
+  }
+
+  document.getElementById("abrir").addEventListener("click", () => {
+    lanzarConfeti();
+    modal.showModal();
+    mostrar(0);
+  });
+  document.getElementById("cerrar").addEventListener("click", cerrarModal);
+  btnAnterior.addEventListener("click", () => mostrar(actual - 1));
+  btnSiguiente.addEventListener("click", () => mostrar(actual + 1));
+  modal.addEventListener("close", () => { pantalla.innerHTML = ""; });
+  modal.addEventListener("click", (e) => { if (e.target === modal) cerrarModal(); });
+
+  const canvas = document.getElementById("confeti");
+  const ctx = canvas.getContext("2d");
+  const colores = ["#c9b3ec", "#9b7fd1", "#ffe7a3", "#fcf9ff", "#3a2a58"];
+  let piezas = [];
+
+  function ajustar() { canvas.width = innerWidth; canvas.height = innerHeight; }
+  addEventListener("resize", ajustar);
+  ajustar();
+
+  function lanzarConfeti() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const vacio = piezas.length === 0;
+    for (let i = 0; i < 140; i++) {
+      piezas.push({
+        x: innerWidth / 2, y: innerHeight * 0.6,
+        vx: (Math.random() - 0.5) * 16,
+        vy: -Math.random() * 16 - 6,
+        w: 6 + Math.random() * 6, h: 10 + Math.random() * 8,
+        r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4,
+        c: colores[Math.floor(Math.random() * colores.length)]
+      });
+    }
+    if (vacio) requestAnimationFrame(animar);
+  }
+
+  function animar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    piezas.forEach(p => {
+      p.vy += 0.35; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vx *= 0.99;
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.r);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    piezas = piezas.filter(p => p.y < canvas.height + 30);
+    if (piezas.length) requestAnimationFrame(animar);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+</script>
+</body>
+</html>
